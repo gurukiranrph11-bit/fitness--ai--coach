@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>FitAI - AI-Powered Fitness Coach</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Splash/Loading Screen -->
+    <div id="splash-screen" class="splash-screen">
+        <div class="splash-content">
+            <div class="splash-logo">
+                <i class="fas fa-brain"></i>
+                <span>FitAI</span>
+            </div>
+            <div class="splash-loader">
+                <div class="loader-ring"></div>
+            </div>
+            <p class="splash-tagline">Intelligent Fitness, Personalized for You</p>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app" class="app-container" style="display: none;">
+        
+        <!-- ==================== ONBOARDING SCREEN ==================== -->
+        <div id="screen-onboarding" class="screen active">
+            <div class="onboarding-container">
+                <div class="onboarding-header">
+                    <div class="onboarding-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>FitAI</span>
+                    </div>
+                    <p class="onboarding-subtitle">Let's get to know you to create your perfect fitness plan</p>
+                </div>
+                
+                <div class="onboarding-progress-bar">
+                    <div class="onboarding-progress-fill" id="onboarding-progress-fill"></div>
+                </div>
+                <div class="onboarding-step-indicator">
+                    <span id="onboarding-step-text">Step 1 of 5</span>
+                </div>
+
+                <!-- Step 1: Basic Info -->
+                <div class="onboarding-step" id="onboarding-step-1">
+                    <div class="step-icon"><i class="fas fa-user"></i></div>
+                    <h2>Basic Information</h2>
+                    <div class="form-group">
+                        <label for="input-age">Age</label>
+                        <input type="number" id="input-age" placeholder="Enter your age" min="10" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label for="input-gender">Gender</label>
+                        <select id="input-gender">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="input-weight">Weight (kg)</label>
+                            <input type="number" id="input-weight" placeholder="70" min="20" max="300">
+                        </div>
+                        <div class="form-group half">
+                            <label for="input-height">Height (cm)</label>
+                            <input type="number" id="input-height" placeholder="175" min="50" max="300">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Fitness Level -->
+                <div class="onboarding-step" id="onboarding-step-2" style="display:none;">
+                    <div class="step-icon"><i class="fas fa-chart-line"></i></div>
+                    <h2>Fitness Level</h2>
+                    <div class="form-group">
+                        <label>How would you describe your current fitness level?</label>
+                        <div class="option-cards">
+                            <div class="option-card" data-value="beginner" onclick="selectFitnessLevel(this)">
+                                <i class="fas fa-seedling"></i>
+                                <h4>Beginner</h4>
+                                <p>Little to no regular exercise</p>
+                            </div>
+                            <div class="option-card" data-value="intermediate" onclick="selectFitnessLevel(this)">
+                                <i class="fas fa-walking"></i>
+                                <h4>Intermediate</h4>
+                                <p>Exercise 2-3 times per week</p>
+                            </div>
+                            <div class="option-card" data-value="advanced" onclick="selectFitnessLevel(this)">
+                                <i class="fas fa-running"></i>
+                                <h4>Advanced</h4>
+                                <p>Exercise 4+ times per week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-activity">Daily Activity Level</label>
+                        <select id="input-activity">
+                            <option value="sedentary">Sedentary (desk job)</option>
+                            <option value="light">Light Activity</option>
+                            <option value="moderate" selected>Moderate Activity</option>
+                            <option value="active">Very Active</option>
+                            <option value="extreme">Extremely Active</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 3: Goals -->
+                <div class="onboarding-step" id="onboarding-step-3" style="display:none;">
+                    <div class="step-icon"><i class="fas fa-bullseye"></i></div>
+                    <h2>Your Goals</h2>
+                    <div class="form-group">
+                        <label>What's your primary fitness goal?</label>
+                        <div class="option-cards">
+                            <div class="option-card" data-value="weight_loss" onclick="selectGoal(this)">
+                                <i class="fas fa-weight"></i>
+                                <h4>Weight Loss</h4>
+                                <p>Burn fat and shed pounds</p>
+                            </div>
+                            <div class="option-card" data-value="muscle_gain" onclick="selectGoal(this)">
+                                <i class="fas fa-dumbbell"></i>
+                                <h4>Muscle Gain</h4>
+                                <p>Build strength and mass</p>
+                            </div>
+                            <div class="option-card" data-value="endurance" onclick="selectGoal(this)">
+                                <i class="fas fa-heart"></i>
+                                <h4>Endurance</h4>
+                                <p>Improve stamina & cardio</p>
+                            </div>
+                            <div class="option-card" data-value="general_fitness" onclick="selectGoal(this)">
+                                <i class="fas fa-heartbeat"></i>
+                                <h4>General Fitness</h4>
+                                <p>Overall health & wellness</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-target">Target weight (kg) - optional</label>
+                        <input type="number" id="input-target" placeholder="Leave blank if unsure" min="20" max="300">
+                    </div>
+                </div>
+
+                <!-- Step 4: Health -->
+                <div class="onboarding-step" id="onboarding-step-4" style="display:none;">
+                    <div class="step-icon"><i class="fas fa-notes-medical"></i></div>
+                    <h2>Health & Conditions</h2>
+                    <div class="form-group">
+                        <label>Do you have any health conditions?</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="none"> None
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="diabetes"> Diabetes
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="hypertension"> Hypertension
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="asthma"> Asthma
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="joint pain"> Joint Pain
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="back pain"> Back Pain
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox" value="heart condition"> Heart Condition
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-injuries">Any injuries or limitations?</label>
+                        <textarea id="input-injuries" placeholder="Describe any injuries or limitations..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 5: Preferences -->
+                <div class="onboarding-step" id="onboarding-step-5" style="display:none;">
+                    <div class="step-icon"><i class="fas fa-clock"></i></div>
+                    <h2>Workout Preferences</h2>
+                    <div class="form-group">
+                        <label for="input-days">Days per week you can commit</label>
+                        <div class="days-selector">
+                            <button class="day-btn" data-day="1" onclick="toggleDay(this)">1</button>
+                            <button class="day-btn" data-day="2" onclick="toggleDay(this)">2</button>
+                            <button class="day-btn active" data-day="3" onclick="toggleDay(this)">3</button>
+                            <button class="day-btn" data-day="4" onclick="toggleDay(this)">4</button>
+                            <button class="day-btn" data-day="5" onclick="toggleDay(this)">5</button>
+                            <button class="day-btn" data-day="6" onclick="toggleDay(this)">6</button>
+                            <button class="day-btn" data-day="7" onclick="toggleDay(this)">7</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="input-duration">Workout duration (minutes)</label>
+                        <input type="range" id="input-duration" min="15" max="120" value="45">
+                        <span id="duration-display">45 min</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Preferred workout type</label>
+                        <div class="option-cards small">
+                            <div class="option-card" data-value="home" onclick="selectWorkoutType(this)">
+                                <i class="fas fa-home"></i>
+                                <h4>Home</h4>
+                            </div>
+                            <div class="option-card" data-value="gym" onclick="selectWorkoutType(this)">
+                                <i class="fas fa-building"></i>
+                                <h4>Gym</h4>
+                            </div>
+                            <div class="option-card" data-value="outdoor" onclick="selectWorkoutType(this)">
+                                <i class="fas fa-tree"></i>
+                                <h4>Outdoor</h4>
+                            </div>
+                            <div class="option-card" data-value="mixed" onclick="selectWorkoutType(this)">
+                                <i class="fas fa-random"></i>
+                                <h4>Mixed</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="onboarding-nav">
+                    <button class="btn btn-secondary" id="onboarding-prev" onclick="prevOnboardingStep()" style="display:none;">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="btn btn-primary" id="onboarding-next" onclick="nextOnboardingStep()">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-primary" id="onboarding-finish" onclick="finishOnboarding()" style="display:none;">
+                        <i class="fas fa-check"></i> Start Your Journey
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== MAIN APP ==================== -->
+        <div id="screen-main" class="screen" style="display:none;">
+            <!-- Top Navigation Bar -->
+            <header class="app-header">
+                <div class="header-left">
+                    <div class="app-logo">
+                        <i class="fas fa-brain"></i>
+                        <span>FitAI</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">
+                        <i class="fas fa-moon" id="theme-icon"></i>
+                    </button>
+                    <button class="icon-btn notification-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notification-badge">3</span>
+                    </button>
+                    <div class="user-avatar" onclick="toggleProfileMenu()">
+                        <span id="user-avatar-text">U</span>
+                        <div class="profile-dropdown" id="profile-dropdown">
+                            <a href="#" onclick="showScreen('dashboard')"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                            <a href="#" onclick="showScreen('workout')"><i class="fas fa-dumbbell"></i> Workouts</a>
+                            <a href="#" onclick="showScreen('nutrition')"><i class="fas fa-apple-alt"></i> Nutrition</a>
+                            <a href="#" onclick="showScreen('progress')"><i class="fas fa-chart-line"></i> Progress</a>
+                            <a href="#" onclick="resetApp()"><i class="fas fa-sign-out-alt"></i> Reset</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <button class="nav-btn active" data-screen="dashboard" onclick="showScreen('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-btn" data-screen="workout" onclick="showScreen('workout')">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Workout</span>
+                </button>
+                <button class="nav-btn" data-screen="coach" onclick="showScreen('coach')">
+                    <i class="fas fa-robot"></i>
+                    <span>AI Coach</span>
+                </button>
+                <button class="nav-btn" data-screen="nutrition" onclick="showScreen('nutrition')">
+                    <i class="fas fa-apple-alt"></i>
+                    <span>Nutrition</span>
+                </button>
+                <button class="nav-btn" data-screen="progress" onclick="showScreen('progress')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </button>
+            </nav>
+
+            <!-- Content Area -->
+            <main class="main-content">
+                
+                <!-- DASHBOARD -->
+                <div id="screen-dashboard" class="screen-content active">
+                    <div class="greeting">
+                        <h2>Good Morning, <span id="user-name-display">User</span>! 👋</h2>
+                        <p id="daily-motivation">Let's crush today's workout!</p>
+                    </div>
+                    
+                    <!-- Streak & Stats Bar -->
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <span class="stat-value" id="streak-count">0</span>
+                            <span class="stat-label">Day Streak</span>
+                            <i class="fas fa-fire stat-icon fire"></i>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="today-calories">0</span>
+                            <span class="stat-label">Calories</span>
+                            <i class="fas fa-bolt stat-icon"></i>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="today-minutes">0</span>
+                            <span class="stat-label">Minutes</span>
+                            <i class="fas fa-clock stat-icon"></i>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="badge-count">0</span>
+                            <span class="stat-label">Badges</span>
+                            <i class="fas fa-medal stat-icon"></i>
+                        </div>
+                    </div>
+
+                    <!-- Today's Workout Card -->
+                    <div class="card today-workout-card" onclick="showScreen('workout')">
+                        <div class="card-header">
+                            <h3><i class="fas fa-dumbbell"></i> Today's Workout</h3>
+                            <span class="badge" id="workout-status">Ready</span>
+                        </div>
+                        <div id="today-workout-preview">
+                            <p class="text-muted">Complete onboarding to generate your plan</p>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-bar"></i> This Week</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="weekly-chart-dashboard"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- AI Coach Nudge -->
+                    <div class="card ai-nudge-card" onclick="showScreen('coach')">
+                        <div class="nudge-content">
+                            <div class="nudge-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <p class="nudge-text" id="ai-nudge-text">Complete your profile so I can help you reach your goals! 🎯</p>
+                                <span class="nudge-time">AI Coach</span>
+                            </div>
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                        </div>
+                        <div class="activity-list" id="activity-list">
+                            <p class="text-muted">No activity logged yet</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WORKOUT SCREEN -->
+                <div id="screen-workout" class="screen-content">
+                    <div class="screen-header">
+                        <h2><i class="fas fa-dumbbell"></i> Workout Plans</h2>
+                        <button class="btn btn-sm btn-primary" onclick="regenerateWorkouts()">
+                            <i class="fas fa-sync-alt"></i> Regenerate
+                        </button>
+                    </div>
+                    
+                    <!-- Weekly Overview -->
+                    <div class="weekly-overview">
+                        <h3>This Week's Plan</h3>
+                        <div class="week-days" id="week-days">
+                            <div class="week-day" data-day="0" onclick="selectDay(this)">Sun</div>
+                            <div class="week-day" data-day="1" onclick="selectDay(this)">Mon</div>
+                            <div class="week-day" data-day="2" onclick="selectDay(this)">Tue</div>
+                            <div class="week-day" data-day="3" onclick="selectDay(this)">Wed</div>
+                            <div class="week-day" data-day="4" onclick="selectDay(this)">Thu</div>
+                            <div class="week-day" data-day="5" onclick="selectDay(this)">Fri</div>
+                            <div class="week-day" data-day="6" onclick="selectDay(this)">Sat</div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Detail -->
+                    <div class="card" id="workout-detail">
+                        <div class="workout-header">
+                            <h3 id="workout-day-title">Today's Workout</h3>
+                            <span class="workout-intensity" id="workout-intensity">Moderate</span>
+                        </div>
+                        <div class="workout-info">
+                            <span><i class="far fa-clock"></i> <span id="workout-duration">45</span> min</span>
+                            <span><i class="fas fa-fire"></i> <span id="workout-calories-burn">350</span> cal</span>
+                        </div>
+                        <div class="exercise-list" id="exercise-list">
+                            <!-- Exercises populated by JS -->
+                        </div>
+                        <button class="btn btn-primary btn-full" onclick="startWorkout()">
+                            <i class="fas fa-play"></i> Start Workout
+                        </button>
+                    </div>
+
+                    <!-- Active Workout Modal -->
+                    <div id="workout-modal" class="modal" style="display:none;">
+                        <div class="modal-content workout-modal">
+                            <div class="workout-timer">
+                                <div class="timer-circle">
+                                    <svg width="120" height="120">
+                                        <circle cx="60" cy="60" r="54" stroke="#2a2a3e" stroke-width="6" fill="none"/>
+                                        <circle id="timer-progress" cx="60" cy="60" r="54" stroke="#00e676" stroke-width="6" fill="none" 
+                                            stroke-dasharray="339.292" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                                    </svg>
+                                    <span id="timer-display">00:00</span>
+                                </div>
+                            </div>
+                            <div id="active-exercise">
+                                <h3 id="active-exercise-name">Exercise Name</h3>
+                                <p id="active-exercise-detail">3 x 12 reps</p>
+                                <div class="exercise-progress">
+                                    <span id="exercise-counter">1/8</span>
+                                </div>
+                            </div>
+                            <div class="workout-controls">
+                                <button class="btn btn-secondary" onclick="pauseWorkout()">
+                                    <i class="fas fa-pause"></i> Pause
+                                </button>
+                                <button class="btn btn-primary" onclick="completeExercise()">
+                                    <i class="fas fa-check"></i> Complete
+                                </button>
+                            </div>
+                            <button class="btn btn-danger btn-full" onclick="endWorkout()">
+                                <i class="fas fa-stop"></i> End Workout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI COACH SCREEN -->
+                <div id="screen-coach" class="screen-content">
+                    <div class="screen-header">
+                        <h2><i class="fas fa-robot"></i> AI Coach</h2>
+                        <span class="badge badge-primary" id="coach-status">Online</span>
+                    </div>
+
+                    <!-- Coach Chat -->
+                    <div class="chat-container" id="chat-container">
+                        <div class="chat-header">
+                            <div class="chat-avatar">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <div>
+                                <h4>FitAI Coach</h4>
+                                <p class="text-muted" id="coach-subtitle">Your personal AI fitness assistant</p>
+                            </div>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message bot">
+                                <div class="message-content">
+                                    <p>Hey there! 👋 I'm your AI fitness coach. I can help you with:</p>
+                                    <ul>
+                                        <li>💪 Personalized workout plans</li>
+                                        <li>🥗 Nutrition & meal guidance</li>
+                                        <li>📊 Progress tracking & insights</li>
+                                        <li>🎯 Motivation & tips</li>
+                                    </ul>
+                                    <p>What would you like help with today?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <div class="quick-replies" id="quick-replies">
+                                <button class="quick-reply" onclick="sendQuickReply('Plan a workout for me')">📋 Plan Workout</button>
+                                <button class="quick-reply" onclick="sendQuickReply('Meal suggestions')">🍽️ Meal Ideas</button>
+                                <button class="quick-reply" onclick="sendQuickReply('How am I progressing?')">📈 My Progress</button>
+                                <button class="quick-reply" onclick="sendQuickReply('Motivate me!')">🔥 Motivate Me</button>
+                            </div>
+                            <div class="input-wrapper">
+                                <input type="text" id="chat-input-field" placeholder="Ask your AI coach anything..." onkeypress="if(event.key==='Enter') sendMessage()">
+                                <button class="btn-send" onclick="sendMessage()">
+                                    <i class="fas fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coach Insights Card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-lightbulb"></i> AI Insights</h3>
+                        </div>
+                        <div class="insights-list" id="insights-list">
+                            <div class="insight-item">
+                                <i class="fas fa-check-circle insight-icon green"></i>
+                                <span>Complete your profile for personalized insights</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NUTRITION SCREEN -->
+                <div id="screen-nutrition" class="screen-content">
+                    <div class="screen-header">
+                        <h2><i class="fas fa-apple-alt"></i> Nutrition</h2>
+                        <button class="btn btn-sm btn-primary" onclick="logMeal()">
+                            <i class="fas fa-plus"></i> Log Meal
+                        </button>
+                    </div>
+
+                    <!-- Macro Goals -->
+                    <div class="macro-goals">
+                        <div class="macro-item">
+                            <div class="macro-circle" id="calories-circle">
+                                <svg width="80" height="80">
+                                    <circle cx="40" cy="40" r="35" stroke="#2a2a3e" stroke-width="6" fill="none"/>
+                                    <circle id="cal-progress" cx="40" cy="40" r="35" stroke="#ff6b6b" stroke-width="6" fill="none" 
+                                        stroke-dasharray="219.91" stroke-dashoffset="219.91" transform="rotate(-90 40 40)"/>
+                                </svg>
+                                <div class="macro-value">
+                                    <span id="cal-consumed">0</span>
+                                    <small>/ <span id="cal-target">2000</span></small>
+                                </div>
+                            </div>
+                            <p>Calories</p>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-circle" id="protein-circle">
+                                <svg width="80" height="80">
+                                    <circle cx="40" cy="40" r="35" stroke="#2a2a3e" stroke-width="6" fill="none"/>
+                                    <circle id="protein-progress" cx="40" cy="40" r="35" stroke="#4ecdc4" stroke-width="6" fill="none" 
+                                        stroke-dasharray="219.91" stroke-dashoffset="219.91" transform="rotate(-90 40 40)"/>
+                                </svg>
+                                <div class="macro-value">
+                                    <span id="protein-consumed">0</span>
+                                    <small>g</small>
+                                </div>
+                            </div>
+                            <p>Protein</p>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-circle" id="carbs-circle">
+                                <svg width="80" height="80">
+                                    <circle cx="40" cy="40" r="35" stroke="#2a2a3e" stroke-width="6" fill="none"/>
+                                    <circle id="carbs-progress" cx="40" cy="40" r="35" stroke="#45b7d1" stroke-width="6" fill="none" 
+                                        stroke-dasharray="219.91" stroke-dashoffset="219.91" transform="rotate(-90 40 40)"/>
+                                </svg>
+                                <div class="macro-value">
+                                    <span id="carbs-consumed">0</span>
+                                    <small>g</small>
+                                </div>
+                            </div>
+                            <p>Carbs</p>
+                        </div>
+                        <div class="macro-item">
+                            <div class="macro-circle" id="fat-circle">
+                                <svg width="80" height="80">
+                                    <circle cx="40" cy="40" r="35" stroke="#2a2a3e" stroke-width="6" fill="none"/>
+                                    <circle id="fat-progress" cx="40" cy="40" r="35" stroke="#f9ca24" stroke-width="6" fill="none" 
+                                        stroke-dasharray="219.91" stroke-dashoffset="219.91" transform="rotate(-90 40 40)"/>
+                                </svg>
+                                <div class="macro-value">
+                                    <span id="fat-consumed">0</span>
+                                    <small>g</small>
+                                </div>
+                            </div>
+                            <p>Fats</p>
+                        </div>
+                    </div>
+
+                    <!-- Meal Suggestions -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-utensils"></i> Today's Meal Suggestions</h3>
+                            <button class="btn btn-sm btn-secondary" onclick="refreshMeals()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
+                        <div class="meal-list" id="meal-list">
+                            <!-- Meals populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Water Intake -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-tint"></i> Water Intake</h3>
+                        </div>
+                        <div class="water-tracker">
+                            <div class="water-glasses" id="water-glasses">
+                                <button class="water-glass" onclick="drinkWater(0)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(1)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(2)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(3)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(4)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(5)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(6)"><i class="fas fa-wine-bottle"></i></button>
+                                <button class="water-glass" onclick="drinkWater(7)"><i class="fas fa-wine-bottle"></i></button>
+                            </div>
+                            <p><span id="water-count">0</span>/8 glasses</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROGRESS SCREEN -->
+                <div id="screen-progress" class="screen-content">
+                    <div class="screen-header">
+                        <h2><i class="fas fa-chart-line"></i> Progress</h2>
+                        <span class="badge badge-success" id="progress-prediction">On Track</span>
+                    </div>
+
+                    <!-- Predictive Insight -->
+                    <div class="card prediction-card">
+                        <div class="prediction-content">
+                            <i class="fas fa-magic prediction-icon"></i>
+                            <div>
+                                <h4>AI Prediction</h4>
+                                <p id="prediction-text">Complete your profile to see predictive insights</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weight Chart -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-weight"></i> Weight Trend</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="weight-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Workout Consistency -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-calendar-check"></i> Workout Consistency</h3>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="consistency-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Achievements / Badges -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-trophy"></i> Achievements</h3>
+                        </div>
+                        <div class="badges-grid" id="badges-grid">
+                            <!-- Badges populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Weekly Report -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-alt"></i> Weekly Report</h3>
+                        </div>
+                        <div id="weekly-report">
+                            <p class="text-muted">Complete a full week of workouts to see your report</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notification Panel -->
+    <div id="notification-panel" class="notification-panel" style="display:none;">
+        <div class="notification-header">
+            <h3><i class="fas fa-bell"></i> Notifications</h3>
+            <button onclick="closeNotifications()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notification-list" id="notification-list">
+            <div class="notification-item">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <p>Welcome to FitAI! Complete your profile to get started.</p>
+                    <small>Just now</small>
+                </div>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-robot"></i>
+                <div>
+                    <p>AI Coach is ready to help you reach your goals!</p>
+                    <small>Just now</small>
+                </div>
+            </div>
+            <div class="notification-item">
+                <i class="fas fa-trophy"></i>
+                <div>
+                    <p>Complete your first workout to earn your first badge!</p>
+                    <small>Just now</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Meal Log Modal -->
+    <div id="meal-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Log Meal</h3>
+                <button onclick="closeMealModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-group">
+                <label for="meal-type">Meal Type</label>
+                <select id="meal-type">
+                    <option value="breakfast">Breakfast</option>
+                    <option value="lunch">Lunch</option>
+                    <option value="dinner">Dinner</option>
+                    <option value="snack">Snack</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="meal-name">Food Name</label>
+                <input type="text" id="meal-name" placeholder="e.g., Grilled Chicken Salad">
+            </div>
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="meal-calories">Calories</label>
+                    <input type="number" id="meal-calories" placeholder="450">
+                </div>
+                <div class="form-group half">
+                    <label for="meal-protein">Protein (g)</label>
+                    <input type="number" id="meal-protein" placeholder="30">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="meal-carbs">Carbs (g)</label>
+                    <input type="number" id="meal-carbs" placeholder="45">
+                </div>
+                <div class="form-group half">
+                    <label for="meal-fat">Fat (g)</label>
+                    <input type="number" id="meal-fat" placeholder="15">
+                </div>
+            </div>
+            <button class="btn btn-primary btn-full" onclick="saveMeal()">
+                <i class="fas fa-check"></i> Log Meal
+            </button>
+        </div>
+    </div>
+
+    <script src="js/gamification.js"></script>
+    <script src="js/ai-coach.js"></script>
+    <script src="js/nutrition.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
